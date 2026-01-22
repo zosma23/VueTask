@@ -2,12 +2,9 @@
   import { reactive, ref } from 'vue'
   import { computed } from 'vue'
   import {useCounterStore} from '@/stores/counter'
-  import TaskForm from '@/components/TaskForm.vue'
-  import TaskStat from '@/components/TaskStat.vue'
-  import TaskFilter from '@/components/TaskFilter.vue'
 
   const success = ref(false)
-  const status = ref(['etudiant', 'actif', 'autre'])
+  
   const category = ref(['Sport', 'Travail', 'Loisir', 'Études'])
   const selectedActivities = ref([])
   const counterStore = useCounterStore()
@@ -35,6 +32,7 @@
   duration: 0,
   category: ''
 })
+    
 
     // fonction addActivity pour ajouter une activité au tableau activitiesList
   function addActivity() {
@@ -49,25 +47,8 @@
      newActivity.duration =0 
      newActivity.category =''
       
-    
-   
-  }
+}
 
-  const formAction = reactive({
-    prenom: '',
-    age: '',
-    status: <'etudiant'|'actif'|'autre'>('etudiant')
-  })
-
-  function onSubmit() {
-    console.log('Données envoyées :', formAction)
-
-    // reset
-    formAction.prenom = ''
-    formAction.age = ''
-    formAction.status = 'etudiant'
-    success.value = true
-  }
 
 // pour le computed
 const totalActivities = computed(() => activitiesList.value.length)
@@ -87,35 +68,41 @@ const showSummary = ref(true)
 
  // sauvegarde localStorage 
 
-let profile = reactive({
-    prenom: '',
-    age: '',
-    status: ''
-  })
-
-function saveProfile() {
-    localStorage.setItem('profile', JSON.stringify(profile))
-    console.log('Profil sauvegardé dans le localStorage :', profile)
-  }
-
-const stored = localStorage.getItem("profile");
-if (stored) {
-profile = JSON.parse(stored);
-}
-
 
 </script>
 
 <template>
   
-<TaskStat />
-<TaskForm />
-<TaskFilter/>
+
+
+<!-- ajouter un filtre par categorie -->
+    <div class="form-container">
+        <h2>Filtrer les activités par catégorie</h2>
+        <div class="field">
+            <label>Catégorie</label>
+            <select v-model="newActivity.category">
+            <option value="">Toutes les catégories</option>
+            <option v-for="s in category" :key="s" :value="s">{{ s }}</option>
+            </select>
+        </div>
+        <ul>
+            <li v-for="activity in activitiesList.filter(a => !newActivity.category || a.category === newActivity.category)" :key="activity.name">
+              <input type="checkbox" />  
+              {{ activity.name }} - {{ activity.duration }} minutes - {{ activity.category }}
+            </li>
+        </ul>
+    </div>
+
+
+
+
 
 </template>
 
+
+
 <style scoped>
-  .form-container {
+.form-container {
   max-width: 400px;
   margin: 40px auto;
   padding: 20px;

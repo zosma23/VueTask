@@ -2,9 +2,6 @@
   import { reactive, ref } from 'vue'
   import { computed } from 'vue'
   import {useCounterStore} from '@/stores/counter'
-  import TaskForm from '@/components/TaskForm.vue'
-  import TaskStat from '@/components/TaskStat.vue'
-  import TaskFilter from '@/components/TaskFilter.vue'
 
   const success = ref(false)
   const status = ref(['etudiant', 'actif', 'autre'])
@@ -35,6 +32,7 @@
   duration: 0,
   category: ''
 })
+    
 
     // fonction addActivity pour ajouter une activité au tableau activitiesList
   function addActivity() {
@@ -93,29 +91,125 @@ let profile = reactive({
     status: ''
   })
 
-function saveProfile() {
-    localStorage.setItem('profile', JSON.stringify(profile))
-    console.log('Profil sauvegardé dans le localStorage :', profile)
-  }
+let activity = reactive({
+    name: '',
+    duration: 0,
+    category: ''
+  })
 
-const stored = localStorage.getItem("profile");
-if (stored) {
-profile = JSON.parse(stored);
-}
+  function saveActivity(){
+    localStorage.setItem('activity', JSON.stringify(activity))
+    console.log('Tâche sauvegardée dans le localStorage :', activity)
+    }
+
+    const store = localStorage.getItem("activity");
+    if (store) {
+    activity = JSON.parse(store);
+    }
+
+
+
+
+
+
+
+
 
 
 </script>
 
 <template>
   
-<TaskStat />
-<TaskForm />
-<TaskFilter/>
+  
+
+    
+    <div class="form-container">
+        <h2>Ajouter une nouvelle tâche</h2>
+        <form @submit.prevent="addActivity">
+        <div class="field">
+            <label>Nom de la tâche</label>
+            <input v-model="newActivity.name" type="text" placeholder="Nom de la tâche" required />
+        </div>
+    
+        <div class="field">
+            <label>Durée (en minutes)</label>
+            <input v-model.number="newActivity.duration" type="number" placeholder="Durée en minutes" required />
+        </div>
+    
+        <div class="field">
+            <label>Catégorie</label>
+            <select v-model="newActivity.category" required>
+            <option disabled value="">Sélectionnez une catégorie</option>
+            <option v-for="s in category" :key="s" :value="s">{{ s }}</option>
+            </select>
+        </div>
+    
+        <button type="submit">Ajouter la tâche</button>
+        </form>
+    </div>
+
+
+
+<!-- marquer uen tâche comme terminée  -->
+   
+  
+   <div class="form-container">
+    <h2>Liste de vos taches vous pouvez les marquer comme terminée</h2>
+    <ul>
+      <li v-for="activity in activitiesList" :key="activity.name">
+        <input type="checkbox" v-model="selectedActivities" :value="activity.name" />
+        {{ activity.name }} - {{ activity.duration }} minutes - {{ activity.category }}
+      </li>
+    </ul>
+    <p>Tâches terminées : {{ selectedActivities.join(', ') }}</p>
+  </div>
+  
+   
+
+<!-- sauvegarde de la tâche dans le localStorage -->
+ 
+    <div class="form-container">
+      <h2>Sauvegarder la tâche</h2>
+      <div class="field">
+        <label>Nom de la tâche</label>
+        <input v-model="activity.name" type="text" placeholder="Nom de la tâche" />
+      </div>
+      <div class="field">
+        <label>Durée (en minutes)</label>
+        <input v-model.number="activity.duration" type="number" placeholder="Durée en minutes" />
+      </div>
+      <div class="field">
+        <label>Catégorie</label>
+        <select v-model="activity.category">
+          <option v-for="s in category" :key="s" :value="s">{{ s }}</option>
+        </select>
+      </div>
+      <button @click="saveActivity"> Sauvegarder la tâche </button>
+    </div>
+ 
+  
+
+<!-- creer des statistiques Créer des statistiques avec computed :○ nombre total d’activités ○ temps total ○ moyenne par activité -->
+    
+    
+
+  
+
+   <!-- masquer : resume , statistiques -->
+    
+
+
+
+
+   
+
 
 </template>
 
+
+
 <style scoped>
-  .form-container {
+.form-container {
   max-width: 400px;
   margin: 40px auto;
   padding: 20px;

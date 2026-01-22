@@ -2,9 +2,7 @@
   import { reactive, ref } from 'vue'
   import { computed } from 'vue'
   import {useCounterStore} from '@/stores/counter'
-  import TaskForm from '@/components/TaskForm.vue'
-  import TaskStat from '@/components/TaskStat.vue'
-  import TaskFilter from '@/components/TaskFilter.vue'
+
 
   const success = ref(false)
   const status = ref(['etudiant', 'actif', 'autre'])
@@ -108,14 +106,57 @@ profile = JSON.parse(stored);
 
 <template>
   
-<TaskStat />
-<TaskForm />
-<TaskFilter/>
+
+
+    
+
+<!-- creer des statistiques Créer des statistiques avec computed :○ nombre total d’activités ○ temps total ○ moyenne par activité -->
+    
+    <div class="form-container">
+      <h2>Statistiques des activités</h2>
+
+      <p>Nombre total d'activités : {{ totalActivities }}</p>
+      <p>Temps total : {{ totalTime }} minutes</p>
+      <p>Moyenne par activité : {{ averageTime }} minutes</p>
+    </div>
+
+  
+
+   <!-- masquer : resume , statistiques -->
+    <div class="form-container">
+      <h2>Résumé et Statistiques</h2>
+
+      <button @click="showSummary = !showSummary">
+        {{ showSummary ? 'Masquer' : 'Afficher' }} le résumé
+      </button>
+
+      <div v-if="showSummary">
+        <h3>Résumé</h3>
+        <p>Nombre total d'activités : {{ totalActivities }}</p>
+        <p>Temps total : {{ totalTime }} minutes</p>
+        <p>Moyenne par activité : {{ averageTime }} minutes</p>
+      </div>
+    </div>
+   
+
+
+  
+  
+
+
+
+
+
+
+   
+
 
 </template>
 
+
+
 <style scoped>
-  .form-container {
+.form-container {
   max-width: 400px;
   margin: 40px auto;
   padding: 20px;
