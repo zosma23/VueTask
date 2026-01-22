@@ -1,133 +1,54 @@
 # VueTask
 
-📌 PROJET FIL ROUGE – VueTask
-🎯 Contexte pédagogique
-Dans le cadre du module Framework Vue.js (Vue 3 – Composition API), vous allez développer une application web complète appelée VueTask.
-VueTask est un gestionnaire de tâches moderne inspiré des outils utilisés en entreprise (Trello, Todoist, Jira – version simplifi ée). Ce projet servira de fi l rouge tout au long du cours et évoluera progressivement en fonction des notions vues.
+This template should help get you started developing with Vue 3 in Vite.
 
-🎯 Objectifs du projet
-À la fin du projet, vous serez capable de :
-● Créer une application SPA (Single Page Application) avec Vue.js 3
-● Structurer un projet Vue avec Vite
-● Utiliser la Composition API
-● Créer des composants réutilisables
-● Gérer un état global avec Pinia
-● Mettre en place la navigation avec Vue Router
-● Consommer une API REST
-● Produire une application maintenable et professionnelle
+## Recommended IDE Setup
 
-🧩 Description fonctionnelle de VueTask
-L’application VueTask permet à un utilisateur de :
-● Créer des tâches
-● Consulter la liste des tâches
-● Marquer une tâche comme terminée
-● Modifi er ou supprimer une tâche
-● Filtrer et rechercher des tâches
-● Consulter le détail d’une tâche
-● Naviguer entre plusieurs pages
-🗂️
+[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
+## Recommended Browser Setup
 
-Découpage du projet par journées
+- Chromium-based browsers (Chrome, Edge, Brave, etc.):
+  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
+- Firefox:
+  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
 
-🟢 JOUR 1 – Fondations & Réactivité
-Objectif : Mettre en place la structure du projet et comprendre la réactivité Vue.
-Fonctionnalités attendues
-● Création du projet Vue avec Vite
-● Structure propre du projet (components, views, stores)
-● Affi chage d’une liste de tâches
-● Ajout d’une tâche via un formulaire
-● Suppression d’une tâche
-● Marquage d’une tâche comme terminée
-● Utilisation de :
-○ ref, reactive
-○ v-if, v-for
-○ v-model
-○ événements (@click, @submit)
+## Type Support for `.vue` Imports in TS
 
-Contraintes techniques
-● Vue 3
-● Composition API (<script setup>)
-● TypeScript recommandé
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-🟡 JOUR 2 – Composants & État global (Pinia)
-Objectif : Rendre l’application modulaire et scalable.
-Fonctionnalités attendues
-● Découpage en composants :
-○ TaskCard
-○ TaskForm
-○ TaskFilter
-○ TaskStats
+## Customize configuration
 
-● Communication :
-○ props
-○ emit
-● Centralisation des données avec Pinia
+See [Vite Configuration Reference](https://vite.dev/config/).
 
-● Actions CRUD complètes :
-○ ajouter
-○ modifi er
-○ supprimer
-○ toggle terminé
+## Project Setup
 
-● Filtres :
-○ toutes
-○ actives
-○ terminées
+```sh
+npm install
+```
 
-● Statistiques :
-○ nombre total
-○ nombre terminées
-○ pourcentage de complétion
+### Compile and Hot-Reload for Development
 
-Contraintes techniques
-● Store Pinia typé
-● Aucun état métier stocké directement dans les composants
-● Les composants doivent être réutilisables
+```sh
+npm run dev
+```
 
-🔵 JOUR 3 – Routage, API & Production
-Objectif : Finaliser une vraie application SPA professionnelle.
-Fonctionnalités attendues
-● Mise en place de Vue Router
-● Pages obligatoires :
-○ / → Dashboard
-○ /tasks → Liste des tâches
-○ /tasks/:id → Détail d’une tâche
-○ /settings → Paramètres
-● Routes dynamiques
-● Lazy loading des vues
-● Intégration d’une API REST (réelle ou simulée)
+### Type-Check, Compile and Minify for Production
 
-● Gestion :
-○ loading
-○ erreurs
-● Build de production
-● Déploiement (Vercel / Netlify)
+```sh
+npm run build
+```
 
-🧪 Bonus (optionnel)
-● Persistance via localStorage
-● Authentifi cation simulée
-● Protection de routes
-● Pagination
-● Dark mode
-● Animations de transition
+### Run Unit Tests with [Vitest](https://vitest.dev/)
 
-📦 Livrables attendus
-● Dépôt GitHub propre
-● Code lisible et structuré
-● Nommage clair des composants
-● Application fonctionnelle
+```sh
+npm run test:unit
+```
 
-● README expliquant :
-○ le projet
-○ l’installation
-○ les fonctionnalités
+### Lint with [ESLint](https://eslint.org/)
 
-✅ Critères d’évaluation
-● Respect des consignes
-● Qualité du code
-● Bonne utilisation de Vue 3
-● Architecture claire
-● Composants bien découpés
-● Gestion correcte de l’état global
-● Application fonctionnelle
+```sh
+npm run lint
+```
