@@ -5,6 +5,9 @@
   import TaskForm from '@/components/TaskForm.vue'
   import TaskStat from '@/components/TaskStat.vue'
   import TaskFilter from '@/components/TaskFilter.vue'
+  import Header from '@/components/Header.vue'
+import { R } from 'vue-router/dist/router-CWoNjPRp.mjs'
+ 
 
   const success = ref(false)
   const status = ref(['etudiant', 'actif', 'autre'])
@@ -107,10 +110,17 @@ profile = JSON.parse(stored);
 </script>
 
 <template>
-  
+ 
+ 
+<Header />
+<RouterView />
+
+<!-- <RouterLink to="/dashboard">Go to Dashboard</RouterLink>
+<RouterLink to="/tasks">Go to Tasks</RouterLink>
+<RouterLink to="/settings">Go to Settings</RouterLink>
 <TaskStat />
 <TaskForm />
-<TaskFilter/>
+<TaskFilter/> -->
 
 </template>
 

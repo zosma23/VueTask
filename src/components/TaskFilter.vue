@@ -1,153 +1,84 @@
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
-  import { computed } from 'vue'
-  import {useCounterStore} from '@/stores/counter'
+import { reactive, watch } from 'vue'
 
-  const success = ref(false)
-  
-  const category = ref(['Sport', 'Travail', 'Loisir', 'Études'])
-  const selectedActivities = ref([])
-  const counterStore = useCounterStore()
+// Liste des catégories (tu peux la passer en props si tu veux)
+const categoryList = ['Sport', 'Travail', 'Loisir', 'Études']
 
-
-  interface Activity {
-    name: string
-    duration: number
-    category: string
-  }
-  // marquer uen tache comme terminé
- 
-  // declaration d'une constante avec type et valeurs par defaut
-  const activitiesList = ref<Array<Activity>>([])
-  
-   activitiesList.value=[
-    { name: 'Sport', duration: 60, category: 'Loisir' },
-    { name: 'Travail', duration: 480, category: 'Travail' },
-    { name: 'Loisirs', duration: 120, category: 'Loisir' },
-    { name: 'Études', duration: 180, category: 'Études' }]
-  
-
-  const newActivity = reactive({
-  name: '',
-  duration: 0,
-  category: ''
+// Filtres sélectionnés par l’utilisateur
+const filters = reactive({
+  category: '',
+  minDuration: 0,
+  showCompleted: true
 })
-    
 
-    // fonction addActivity pour ajouter une activité au tableau activitiesList
-  function addActivity() {
-    activitiesList.value.push({
-      name: newActivity.name,
-      duration: newActivity.duration,
-      category: newActivity.category
+// Le parent recevra les filtres via cet event
+const emit = defineEmits(['updateFilters'])
 
-    })
-    console.log('Données envoyées :', newActivity)
-     newActivity.name = '' 
-     newActivity.duration =0 
-     newActivity.category =''
-      
-}
-
-
-// pour le computed
-const totalActivities = computed(() => activitiesList.value.length)
-
-const totalTime = computed(() =>
-  activitiesList.value.reduce((total, activity) => total + activity.duration, 0)
-)
-
-const averageTime = computed(() =>
-  totalActivities.value > 0
-    ? (totalTime.value / totalActivities.value).toFixed(2)
-    : 0
-)
-
-// masquer et afficher 
-const showSummary = ref(true)
-
- // sauvegarde localStorage 
-
-
+// Dès qu’un filtre change → on envoie au parent
+watch(filters, () => {
+  emit('updateFilters', { ...filters })
+}, { deep: true })
 </script>
 
 <template>
-  
+  <div class="filter-container">
+    <h2>Filtres des tâches</h2>
 
-
-<!-- ajouter un filtre par categorie -->
-    <div class="form-container">
-        <h2>Filtrer les activités par catégorie</h2>
-        <div class="field">
-            <label>Catégorie</label>
-            <select v-model="newActivity.category">
-            <option value="">Toutes les catégories</option>
-            <option v-for="s in category" :key="s" :value="s">{{ s }}</option>
-            </select>
-        </div>
-        <ul>
-            <li v-for="activity in activitiesList.filter(a => !newActivity.category || a.category === newActivity.category)" :key="activity.name">
-              <input type="checkbox" />  
-              {{ activity.name }} - {{ activity.duration }} minutes - {{ activity.category }}
-            </li>
-        </ul>
+    <!-- Filtre catégorie -->
+    <div class="field">
+      <label>Catégorie</label>
+      <select v-model="filters.category">
+        <option value="">Toutes</option>
+        <option v-for="c in categoryList" :key="c" :value="c">{{ c }}</option>
+      </select>
     </div>
 
+    <!-- Filtre durée minimale -->
+    <div class="field">
+      <label>Durée minimale (minutes)</label>
+      <input type="number" v-model.number="filters.minDuration" min="0" />
+    </div>
 
-
-
-
+    <!-- Filtre tâches terminées -->
+    <div class="field checkbox">
+      <label>
+        <input type="checkbox" v-model="filters.showCompleted" />
+        Afficher les tâches terminées
+      </label>
+    </div>
+  </div>
 </template>
 
-
-
 <style scoped>
-.form-container {
+.filter-container {
   max-width: 400px;
-  margin: 40px auto;
+  margin: 20px auto;
   padding: 20px;
   background: #f3f4f6;
   border-radius: 10px;
 }
 
 .field {
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 label {
-  display: block;
   font-weight: bold;
-  margin-bottom: 4px;
+  display: block;
+  margin-bottom: 5px;
 }
 
-input, textarea {
-  /* width: 100%; */
+input, select {
+  width: 100%;
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background: #3b82f6;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #2563eb;
-}
-
-.success {
-  margin-top: 10px;
-  color: green;
-  text-align: center;
-}
-
-h2 {
-  color: black;
+.checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
 }
 </style>

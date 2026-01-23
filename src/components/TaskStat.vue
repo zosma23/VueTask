@@ -1,77 +1,22 @@
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
-  import { computed } from 'vue'
-  import {useCounterStore} from '@/stores/counter'
+import { ref, computed } from 'vue'
 
+interface Activity {
+  name: string
+  duration: number
+  category: string
+}
 
-  const success = ref(false)
-  const status = ref(['etudiant', 'actif', 'autre'])
-  const category = ref(['Sport', 'Travail', 'Loisir', 'Études'])
-  const selectedActivities = ref([])
-  const counterStore = useCounterStore()
+const props = defineProps<{
+  activities: Activity[]
+}>()
 
+const showSummary = ref(true)
 
-  interface Activity {
-    name: string
-    duration: number
-    category: string
-  }
-  // marquer uen tache comme terminé
- 
-  // declaration d'une constante avec type et valeurs par defaut
-  const activitiesList = ref<Array<Activity>>([])
-  
-   activitiesList.value=[
-    { name: 'Sport', duration: 60, category: 'Loisir' },
-    { name: 'Travail', duration: 480, category: 'Travail' },
-    { name: 'Loisirs', duration: 120, category: 'Loisir' },
-    { name: 'Études', duration: 180, category: 'Études' }]
-  
-
-  const newActivity = reactive({
-  name: '',
-  duration: 0,
-  category: ''
-})
-
-    // fonction addActivity pour ajouter une activité au tableau activitiesList
-  function addActivity() {
-    activitiesList.value.push({
-      name: newActivity.name,
-      duration: newActivity.duration,
-      category: newActivity.category
-
-    })
-    console.log('Données envoyées :', newActivity)
-     newActivity.name = '' 
-     newActivity.duration =0 
-     newActivity.category =''
-      
-    
-   
-  }
-
-  const formAction = reactive({
-    prenom: '',
-    age: '',
-    status: <'etudiant'|'actif'|'autre'>('etudiant')
-  })
-
-  function onSubmit() {
-    console.log('Données envoyées :', formAction)
-
-    // reset
-    formAction.prenom = ''
-    formAction.age = ''
-    formAction.status = 'etudiant'
-    success.value = true
-  }
-
-// pour le computed
-const totalActivities = computed(() => activitiesList.value.length)
+const totalActivities = computed(() => props.activities.length)
 
 const totalTime = computed(() =>
-  activitiesList.value.reduce((total, activity) => total + activity.duration, 0)
+  props.activities.reduce((total, activity) => total + activity.duration, 0)
 )
 
 const averageTime = computed(() =>
@@ -79,129 +24,155 @@ const averageTime = computed(() =>
     ? (totalTime.value / totalActivities.value).toFixed(2)
     : 0
 )
-
-// masquer et afficher 
-const showSummary = ref(true)
-
- // sauvegarde localStorage 
-
-let profile = reactive({
-    prenom: '',
-    age: '',
-    status: ''
-  })
-
-function saveProfile() {
-    localStorage.setItem('profile', JSON.stringify(profile))
-    console.log('Profil sauvegardé dans le localStorage :', profile)
-  }
-
-const stored = localStorage.getItem("profile");
-if (stored) {
-profile = JSON.parse(stored);
-}
-
-
 </script>
 
 <template>
-  
+  <p>Bienvenue dans votre espace Statistiques. </p>
+  <!-- <img src="" alt=""> -->
+  <div class="stats-wrapper">
 
-
-    
-
-<!-- creer des statistiques Créer des statistiques avec computed :○ nombre total d’activités ○ temps total ○ moyenne par activité -->
-    
-    <div class="form-container">
+    <!-- Bloc gauche -->
+    <div class="stats-card left-card">
       <h2>Statistiques des activités</h2>
 
-      <p>Nombre total d'activités : {{ totalActivities }}</p>
-      <p>Temps total : {{ totalTime }} minutes</p>
-      <p>Moyenne par activité : {{ averageTime }} minutes</p>
+      <div class="stat-line">
+        <span>Nombre total d'activités</span>
+        <span class="number">{{ totalActivities }}</span>
+      </div>
+
+      <div class="stat-line">
+        <span>Temps total</span>
+        <span class="number">{{ totalTime }} min</span>
+      </div>
+
+      <div class="stat-line">
+        <span>Moyenne par activité</span>
+        <span class="number">{{ averageTime }} min</span>
+      </div>
     </div>
 
-  
+    <!-- Bloc droit -->
+    <div class="stats-card right-card">
+      <h2>Résumé</h2>
 
-   <!-- masquer : resume , statistiques -->
-    <div class="form-container">
-      <h2>Résumé et Statistiques</h2>
-
-      <button @click="showSummary = !showSummary">
+      <button class="toggle-btn" @click="showSummary = !showSummary">
         {{ showSummary ? 'Masquer' : 'Afficher' }} le résumé
       </button>
 
-      <div v-if="showSummary">
-        <h3>Résumé</h3>
-        <p>Nombre total d'activités : {{ totalActivities }}</p>
-        <p>Temps total : {{ totalTime }} minutes</p>
-        <p>Moyenne par activité : {{ averageTime }} minutes</p>
-      </div>
+      <transition name="fade">
+        <div v-if="showSummary" class="summary-box">
+          <p><strong>Total :</strong> {{ totalActivities }}</p>
+          <p><strong>Temps :</strong> {{ totalTime }} min</p>
+          <p><strong>Moyenne :</strong> {{ averageTime }} min</p>
+        </div>
+      </transition>
     </div>
-   
 
-
-  
-  
-
-
-
-
-
-
-   
-
-
+  </div>
 </template>
 
-
-
 <style scoped>
-.form-container {
-  max-width: 400px;
+/* Police moderne */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Layout général */
+.stats-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
   margin: 40px auto;
-  padding: 20px;
-  background: #f3f4f6;
-  border-radius: 10px;
+  max-width: 900px;
 }
 
-.field {
-  margin-bottom: 12px;
+/* Cartes */
+.stats-card {
+  flex: 1;
+  padding: 25px;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform .3s ease, box-shadow .3s ease;
 }
 
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 4px;
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
 }
 
-input, textarea {
-  /* width: 100%; */
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* Carte gauche */
+.left-card {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  border: none;
+/* Carte droite */
+.right-card {
+  background: #f9fafb;
+}
+
+/* Titres */
+h2 {
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* Lignes statistiques */
+.stat-line {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+  font-size: 1.1rem;
+}
+
+/* Chiffres mis en valeur */
+.number {
+  font-weight: 700;
+  color: #ffdd57;
+  font-size: 1.4rem;
+  animation: pulse 1.5s infinite;
+}
+
+/* Animation des chiffres */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: .9; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: .9; }
+}
+
+/* Bouton résumé */
+.toggle-btn {
+  padding: 10px 15px;
   background: #3b82f6;
   color: white;
-  border-radius: 6px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background .3s ease;
+  width: 100%;
 }
 
-button:hover {
+.toggle-btn:hover {
   background: #2563eb;
 }
 
-.success {
-  margin-top: 10px;
-  color: green;
-  text-align: center;
+/* Résumé animé */
+.summary-box {
+  margin-top: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-h2 {
-  color: black;
+/* Animation fade */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .4s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>
