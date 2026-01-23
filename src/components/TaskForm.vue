@@ -116,6 +116,14 @@ const averageTime = computed(() =>
     ? (totalTime.value / totalActivities.value).toFixed(2)
     : 0
 )
+
+const selectedActivities = ref([])
+
+const onSelect = () => {
+  console.log('Tâches sélectionnées :', selectedActivities.value)
+}
+
+
 </script>
 
 <template>
@@ -161,56 +169,36 @@ const averageTime = computed(() =>
   <!-- TÂCHES EN COURS -->
   <div class="card glass">
     <h2>Tâches en cours</h2>
+    <h4> vous pouvez les marquez comme terminées , ajouter ou modifier votre tâche</h4>
 
     <div class="task-list">
       <div class="task-card" v-for="(activity, index) in filteredActiveTasks" :key="activity.name">
 
-        <input 
-          type="checkbox"
-          class="checkbox"
-          v-model="activity.completed"
-          @change="toggleCompleted(activity)"
-        />
+        
 
+        <input type="checkbox" class="checkbox" v-model="selectedActivities" :value="activity.name" />
+        
         <div class="task-info">
+          
           <h3>{{ activity.name }}</h3>
           <p>{{ activity.duration }} min — <span class="tag">{{ activity.category }}</span></p>
         </div>
+
+        
 
         <div class="task-actions">
           <button class="btn-edit" @click="editTask(index)">✏️</button>
           <button class="btn-delete" @click="deleteTask(index)">🗑️</button>
         </div>
 
+
+         
       </div>
     </div>
+    <p>Tâches terminées : {{ selectedActivities.join(', ') }}</p>
   </div>
-
-  <!-- TÂCHES TERMINÉES -->
-  <div class="card glass">
-    <h2>Tâches terminées</h2>
-
-    <div class="task-list">
-      <div class="task-card doneTask" v-for="activity in filteredCompletedTasks" :key="activity.name">
-
-        <input 
-          type="checkbox"
-          class="checkbox"
-          v-model="activity.completed"
-          @change="toggleCompleted(activity)"
-        />
-
-        <div class="task-info">
-          <h3>{{ activity.name }}</h3>
-          <p>{{ activity.duration }} min — <span class="tag">{{ activity.category }}</span></p>
-          
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- STATISTIQUES -->
+  
+<!-- STATISTIQUES -->
   <div class="stats-container">
     <div class="stat-box">
       <h3>Total</h3>
@@ -227,7 +215,7 @@ const averageTime = computed(() =>
       <p class="stat-number">{{ averageTime }} min</p>
     </div>
   </div>
-
+  
 </template>
 
 <style scoped>
